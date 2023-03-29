@@ -16,7 +16,7 @@ void fn_accepts_string_view(std::string_view str_view) {
 }
 
 int main(int, char**) {
-    char *my_char_arr = "This is my precious character array.";
+    const char *my_char_arr = "This is my precious character array.";
     std::string my_str("This is my precious string object.");
     fn_accepts_char_arr(my_char_arr);
     // fn_accepts_char_arr(my_str); // Compilation error.
