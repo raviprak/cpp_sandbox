@@ -1,4 +1,4 @@
 build
 *.swp
 a.out
-
+.vscode
