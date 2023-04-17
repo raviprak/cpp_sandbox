@@ -1,0 +1,16 @@
+syntax = "proto3";
+
+/* This example service gets a request to double a number. */
+service DoublingRandomWaitService {
+  // This RPC waits a random amount of seconds [1,10] and then returns a reply containing the doubled number.
+  rpc DoubleThis (DoublingRequest) returns (DoublingReply) {}
+}
+
+message DoublingRequest {
+  int64 number = 1;
+}
+
+message DoublingReply {
+  int64 doubled_number = 1;
+}
+
