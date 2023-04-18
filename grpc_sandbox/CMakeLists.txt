@@ -7,10 +7,7 @@ project(grpc_sandbox VERSION 0.1.0)
 ## What a PITA.
 ########################################################################
 
-# We need this so that the protobuf_generate_cpp cmake command is found and _PROTOBUF_PROTOC is set. 
-find_package(Protobuf CONFIG REQUIRED PATHS ${GOOGLE_INSTALL_DIR}/grpc NO_CMAKE_PATH)
-
-# We need this to find the grpc_cpp_plugin in the grpc source directory.
+# We need this to find the grpc_cpp_plugin in the grpc install directory.
 find_program(_GRPC_CPP_PLUGIN_EXECUTABLE grpc_cpp_plugin ${GOOGLE_INSTALL_DIR}/grpc/bin NO_DEFAULT_PATH)
 message(STATUS "Using protoc-gen-grpc: ${_GRPC_CPP_PLUGIN_EXECUTABLE}")
 
@@ -34,17 +31,40 @@ add_custom_command(
 find_package(absl CONFIG REQUIRED PATHS ${GOOGLE_INSTALL_DIR}/grpc/lib64/cmake/absl NO_DEFAULT_PATH NO_CMAKE_PATH)
 message(STATUS "Using absl ${absl_VERSION}")
 
+# We need this because the subsequent find_package for gRPC needs it. 
+find_package(Protobuf CONFIG REQUIRED PATHS ${GOOGLE_INSTALL_DIR}/grpc NO_CMAKE_PATH)
+
 find_package(gRPC CONFIG REQUIRED PATHS ${GOOGLE_INSTALL_DIR}/grpc NO_CMAKE_PATH NO_DEFAULT_PATH)
 message(STATUS "Using gRPC ${gRPC_VERSION}")
 
-# Create a separate library for the stubs and protobufs created from generated code. 
+# Create a separate library for the stubs and protobufs created from generated code.
 add_library(example_server_stubs example_service.pb.cc example_service.pb.h example_service.grpc.pb.cc example_service.grpc.pb.h)
 target_link_libraries(example_server_stubs gRPC::grpc++_reflection gRPC::grpc++ protobuf::libprotobuf)
 
-add_executable(grpc_example_server grpc_example_server.cpp)
-target_include_directories(grpc_example_server PUBLIC "${CMAKE_CURRENT_BINARY_DIR}")
-target_link_libraries(grpc_example_server absl::flags absl::flags_parse example_server_stubs)
+# Create a separate library for the server so that it can be included in the server main as well as unit tests.
+add_library(grpc_example_server_lib grpc_example_server.cpp grpc_example_server.h)
+target_include_directories(grpc_example_server_lib PUBLIC "${CMAKE_CURRENT_BINARY_DIR}")
+target_link_libraries(grpc_example_server_lib example_server_stubs)
 
-add_executable(grpc_example_client grpc_example_client.cpp)
-target_include_directories(grpc_example_client PUBLIC "${CMAKE_CURRENT_BINARY_DIR}")
-target_link_libraries(grpc_example_client absl::flags absl::flags_parse example_server_stubs)
+# The example server. 
+add_executable(grpc_example_server grpc_example_server_main.cpp)
+target_link_libraries(grpc_example_server grpc_example_server_lib absl::flags absl::flags_parse example_server_stubs)
+
+# Create a separate example client library so that it can be used in the client as well as unit tests.
+add_library(grpc_example_client_lib grpc_example_client_lib.h  grpc_example_client_lib.cpp)
+target_include_directories(grpc_example_client_lib PUBLIC "${CMAKE_CURRENT_BINARY_DIR}")
+target_link_libraries(grpc_example_client_lib example_server_stubs)
+
+# The example client.
+add_executable(grpc_example_client grpc_example_client_main.cpp)
+target_link_libraries(grpc_example_client absl::flags absl::flags_parse example_server_stubs grpc_example_client_lib)
+
+# The unit tests for our server and client.
+set(CMAKE_CXX_STANDARD 17)
+add_executable(grpc_example_server_tests grpc_example_server_tests.cpp)
+target_include_directories(grpc_example_server_tests PUBLIC ${GOOGLE_INSTALL_DIR}/googletest/include)
+target_link_directories(grpc_example_server_tests PUBLIC ${GOOGLE_INSTALL_DIR}/googletest/lib64)
+target_link_libraries(grpc_example_server_tests grpc_example_server_lib grpc_example_client_lib gtest_main gtest)
+
+include(GoogleTest)
+gtest_discover_tests(grpc_example_server_tests)
