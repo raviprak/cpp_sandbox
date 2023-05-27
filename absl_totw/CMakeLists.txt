@@ -5,4 +5,5 @@ set(CPACK_PROJECT_VERSION ${PROJECT_VERSION})
 
 add_subdirectory(totw001)
 add_subdirectory(totw003)
+add_subdirectory(totw005)
 add_subdirectory(totw010)
