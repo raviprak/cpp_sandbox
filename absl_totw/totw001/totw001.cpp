@@ -3,19 +3,23 @@
 #include <iostream>
 #include <string_view>
 
-void fn_accepts_char_arr(const char* char_arr) {
+void fn_accepts_char_arr(const char *char_arr)
+{
     std::cout << "Got char array: " << char_arr << std::endl;
 }
 
-void fn_accepts_string(const std::string& str) {
+void fn_accepts_string(const std::string &str)
+{
     std::cout << "Got string: " << str << std::endl;
 }
 
-void fn_accepts_string_view(std::string_view str_view) {
+void fn_accepts_string_view(std::string_view str_view)
+{
     std::cout << "Got string_view: " << str_view << std::endl;
 }
 
-int main(int, char**) {
+int main(int, char **)
+{
     const char *my_char_arr = "This is my precious character array.";
     std::string my_str("This is my precious string object.");
     fn_accepts_char_arr(my_char_arr);
