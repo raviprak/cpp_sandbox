@@ -54,6 +54,7 @@ int main()
 
 	std::cout << endl;
 	std::cout << "Calling FunctionReturnsSomeBigObjectWithConditional(). ";
+	// NOLINTNEXTLINE clang-tidy warning about object_2 value never being read.
 	SomeBigObject object_2 = FunctionReturnsSomeBigObjectWithConditional(false);
 
 	std::cout << endl;

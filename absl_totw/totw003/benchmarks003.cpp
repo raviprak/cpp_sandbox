@@ -9,6 +9,7 @@ static void BM_StrAppendOperatorThreeStrings(benchmark::State &state)
     std::string str1 = "My favorite first string.";
     std::string str2 = "My favorite second string.";
     std::string str3 = "My favorite third string.";
+    // NOLINTNEXTLINE
     for (auto _ : state)
     {
         std::string str = str1 + str2 + str3;
@@ -22,6 +23,7 @@ static void BM_StrCatThreeStrings(benchmark::State &state)
     std::string str1 = "My favorite first string.";
     std::string str2 = "My favorite second string.";
     std::string str3 = "My favorite third string.";
+    // NOLINTNEXTLINE
     for (auto _ : state)
     {
         std::string str = absl::StrCat(str1, str2, str3);

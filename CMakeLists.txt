@@ -9,6 +9,8 @@ set(CPACK_PROJECT_NAME ${PROJECT_NAME})
 set(CPACK_PROJECT_VERSION ${PROJECT_VERSION})
 include(CPack)
 
+set(CMAKE_CXX_CLANG_TIDY clang-tidy)
+
 add_subdirectory(absl_totw)
 add_subdirectory(protobuf_sandbox)
 add_subdirectory(grpc_sandbox)

@@ -9,6 +9,7 @@ class Parent
 public:
   Parent()
   {
+    // NOLINTNEXTLINE clang-tidy warning about no dynamic dispatch in constructors.
     Foo();
   }
 

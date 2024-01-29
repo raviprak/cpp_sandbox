@@ -20,6 +20,6 @@ int main(int argc, char **argv)
     // We indicate that the channel isn't authenticated (use of
     // InsecureChannelCredentials()).
     DoublingClient doubling_client(target_str);
-    doubling_client.SendRequest(10);
-    return 0;
+    absl::StatusOr<int64_t> reply = doubling_client.SendRequest(10);
+    return reply.ok() ? 0 : -1;
 }
