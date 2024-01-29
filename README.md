@@ -8,5 +8,5 @@ To build the whole source tree, from cpp_sandbox:
 ```
 mkdir build
 cd build
-cmake -DGOOGLE_INSTALL_DIR=<directory where you installed google libs> -DCMAKE_PREFIX_PATH=<directory where you installed google libs> ..
+cmake -DGOOGLE_INSTALL_DIR=<directory where you installed google libs> ..
 make
